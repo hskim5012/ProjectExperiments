@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  </head>
+  <body>
+<div class="container">
+  <div class="row">
+
+  <div class="col-lg-4">
+    <h1>Register here!</h1>
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li class="{{ message.tags }} text-danger">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <div class="form-group">
+
+      <form class="form-group" action="{% url "registration" %}" method="post">
+        {% csrf_token %}
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" class="form-control">
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" class="form-control">
+        <label for="email">Email:</label>
+        <input type="text" name="email" class="form-control">
+        <label for="password">Password:</label>
+        <input type="password" name="password" class="form-control">
+        <label for="password_confirm">Confirm Password:</label>
+        <input type="password" name="password_confirm" class="form-control">
+        <button type="submit" name="login" class="btn btn-primary mt-2">Register!</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-2">
+
+  </div>
+  <div class="col-lg-4">
+    <h1>Login!</h1>
+
+    <div class="form-group px-10">
+      <form class="form-group" action="/login" method="post">
+        {% csrf_token %}
+        <label for="email">Email:</label>
+        <input type="email" name="email" class="form-control">
+        <label for="password">Password:</label>
+        <input type="password" name="password" class="form-control">
+        <button type="submit" name="login" class="btn btn-primary mt-2">Login!</button>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+  </body>
+</html>

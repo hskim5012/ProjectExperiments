@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container ">
+      <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/dashboard">Home</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/logout">Logout</a></li>
+            <a class="btn btn-primary" href="/jobs/new">New Job!</a>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container ">
+        <h2>Hello {{username}}!</h2>
+        {% if messages %}
+            {% for message in messages %}
+              <p class="{{ message.tags }} text-success">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+      </div>
+
+      <div class="container py-3">
+        <h2>Everyone's Job:</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Job</th>
+              <th scope="col">Location</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- since all jobs need to be displayed, from the dashboard to pass context['jobs'] -->
+            {% for job in jobs %}
+            <!-- added this check to show all the jobs that are NOT taken by someone  forign key was named job_poster directed to User-->
+            {% if job.job_taker.id == 1 %}
+            <tr>
+              <td scope="row">{{job.title}}</td>
+              <td>{{job.location}}</td>
+              <td>
+                <a href="/jobs/{{job.id}}">View </a>
+                <!-- Need to display only your posted jobs to edit and remove therefore with the ForeignKey(job_poster) to logged in user/ could also use session.id since user is logged in -->
+                {% if job.job_poster.id == user.id %}
+                <a href="/deletejob/{{job.id}}">Remove </a>
+                <a href="/jobs/edit/{{ job.id }}">Edit </a>
+                {% endif %}
+                <form action='/addjob/{{ job.id}}' method='post'>
+                  {% csrf_token %}
+                <a href="/addjob/{{ job.id }}">Add </a>
+                </form></td>
+            </tr>
+            {% endif %}
+            {%endfor%}
+          </tbody>
+        </table>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Job</th>
+                <th scope="col">Requester</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <h2>{{username}} Jobs</h2>
+              <!-- since all jobs need to be displayed, from the dashboard to pass context['jobs'] -->
+              {% for job in jobs %}
+              <!-- Now we neded to get the table to display the job the current user have accepted which is the job_taker -->
+              {% if job.job_taker.id == user.id %}
+              <tr>
+                <td scope="row">{{job.title}}</td>
+                <td>{{job.job_poster.first_name}}</td>
+                <td><a href="/jobs/{{job.id}}">View </a></td>
+                <td><a href="/deletejob/{{job.id}}">Done </a></td>
+                <!-- Need to do a post for changing database values -->
+                <form class="" action='/giveupjob/{{ job.id}}' method='post'>
+                  {% csrf_token %}
+                  <td><a href="/giveupjob/{{ job.id}}">Give Up </a></td>
+                </form>
+              </tr>
+              {% endif %}
+              {% endfor %}
+          </div>
+
+  </body>
+</html>

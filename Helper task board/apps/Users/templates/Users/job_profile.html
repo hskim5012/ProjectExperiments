@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse"
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/dashboard">Home</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/logout">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container">
+      <!-- information is passed through context along with the "id" in the views.py for job and user name -->
+      <h2>Hello {{user.first_name}}! These are job details!</h2>
+      <p>Job title: {{job.title}}</p>
+      <div class="container border-top border-right border-bottom border-left">
+      <p>{{job.description}}</p>
+      <p>Location: {{job.location}}</p>
+      <p>Posted by: {{job.job_poster.first_name}}</p>
+      <p>Posted on: {{job.created_at}}</p>
+      <p>Categories: {{job.category}}</p>
+      </div>
+
+      <!-- if the job_poster.id doesnt match the currently logged in user then the option will show to add to his/her list -->
+      <!-- also needs to be a post method for changing values in database -->
+      {% if job.job_poster.id != user.id %}
+      <form action="/addjob/{{job.id}}" method='post'>
+        {% csrf_token %}
+        <button type='submit' class='btn btn-link'>Add to my jobs!</button>
+      </form>
+      {% endif %}
+
+
+      <!-- if the job has already been accepted by the logged in user, display here. the job_taker id has to match the user id-->
+      {% if job.job_taker.id == user.id %}
+      <form action='/giveupjob/{{job.id}}' method='post'>
+        {% csrf_token %}
+        <button type='submit' class='btn btn-link'>Give up</button>
+      </form>
+      {% endif %}
+
+
+  </body>
+</html>
